@@ -3,7 +3,6 @@ class Workout
 		@id = id
 		@date = workout_data[:date]
 		@exercises = workout_data[:exercises]
-		binding.pry
 	end
 
 	def id
@@ -15,10 +14,10 @@ class Workout
 	end
 
 	def type
-		if cardio_exercise_percentage >= 0.50
+		if exercise_percentage("cardio") >= 0.50
 			"cardio"
-		elsif 
-			"strength" strength_exercise_percentage >= 0.50
+		elsif exercise_percentage("strength") >= 0.50
+			"strength" 
 		else
 			"other"
 		end
@@ -45,34 +44,26 @@ class Workout
 					calories += (exercise[:duration_in_min] * 8.0)
 				elsif exercise[:intensity] == "low"
 					calories += (exercise[:duration_in_min] * 5.0)
+				end
 			else
-				calories += (exercise[:duration_in_min] * 6.0)
+				calories += exercise[:duration_in_min] * 6.0
 			end
+		end
+
 		calories
 	end
 
 	private
 
-	def cardio_exercise_percentage
-		cardio_exercises = 0
+	def exercise_percentage(exercise_type)
+		exercise_count = 0
 
 		@exercises.each do |exercise|
-			if exercise[:category] == "cardio"
-				cardio_exercises += 1
+			if exercise[:category] == exercise_type
+				exercise_count += 1
 			end
+		end
 
-			cardio_exercises.to_f / @exercises.length
+		exercise_count.to_f / @exercises.length
 	end
-
-	def strength_exercise_percentage
-		strength_exercise = 0
-
-		@exercises.each do |exercise|
-			if exercise[:category] == "strength"
-				strength_exercises += 1
-			end
-
-			strength_exercises.to_f / @exercises.length
-	end
-
 end
